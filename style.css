@@ -378,6 +378,30 @@ h2, h3 {
     margin-top: 10px;
 }
 
+.income-options-container {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f6f9fc;
+}
+
+#calculate-available-btn {
+    width: 100%;
+    margin-top: 8px;
+    background-color: #4caf50;
+    font-size: 0.9em;
+}
+
+#calculate-available-btn:hover {
+    background-color: #45a049;
+}
+
+.link-header {
+    margin-bottom: 10px;
+}
+
 .link-label {
     display: block;
     font-size: 0.8em;

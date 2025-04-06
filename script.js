@@ -1125,6 +1125,97 @@ function handleDownloadScenarios() {
     }
 }
 
+// Function to calculate the maximum available dividend based on current inputs
+function calculateAvailableDividend() {
+    const grossIncome = parseFloat(grossIncomeInput.value) || 0;
+    const ltdExpenses = parseFloat(ltdExpensesInput.value) || 0;
+    const ltdSalary = parseFloat(ltdSalaryInput.value) || 0;
+    const ltdEmployerPension = parseFloat(ltdEmployerPensionInput.value) || 0;
+    const ltdBik = parseFloat(ltdBikInput.value) || 0;
+    
+    // Calculate employer NI on salary
+    const employerNIOnSalary = Math.max(0, ltdSalary - TAX_CONFIG.niEmployer_ST) * TAX_CONFIG.niEmployer_Rate;
+    
+    // Calculate employer NI on BiK
+    const employerNIOnBik = ltdBik * TAX_CONFIG.niClass1A_Rate;
+    
+    // Calculate profit available for Corporation Tax
+    const profitBeforeCT = Math.max(0, grossIncome - ltdExpenses - ltdSalary - employerNIOnSalary - ltdEmployerPension - employerNIOnBik);
+    
+    // Calculate Corporation Tax
+    const corporateTaxRate = profitBeforeCT <= TAX_CONFIG.ctSmallProfitThreshold ? 
+                           TAX_CONFIG.ctSmallProfitRate : TAX_CONFIG.corporationTaxRate;
+    const corporationTax = profitBeforeCT * corporateTaxRate;
+    
+    // Calculate maximum available for dividends
+    const maxAvailableForDividends = Math.max(0, profitBeforeCT - corporationTax);
+    
+    return Math.floor(maxAvailableForDividends); // Round down to nearest pound
+}
+
+// Handle auto-distribute button click
+function handleAutoDistribute() {
+    const grossIncome = parseFloat(grossIncomeInput.value) || 0;
+    const ltdExpenses = parseFloat(ltdExpensesInput.value) || 0;
+    const ltdPension = parseFloat(ltdEmployerPensionInput.value) || 0;
+    const ltdBikValue = parseFloat(ltdBikInput.value) || 0;
+    
+    // Profit after expenses, pension, and BiK
+    const profitBeforeSalaryAndNI = Math.max(0, grossIncome - ltdExpenses - ltdPension - (ltdBikValue * TAX_CONFIG.niClass1A_Rate));
+    
+    // Use 30% of available funds for salary, 70% for dividends (simplified approach)
+    const suggestedSalary = Math.min(TAX_CONFIG.personalAllowance, profitBeforeSalaryAndNI * 0.3);
+    
+    // Update salary
+    ltdSalaryInput.value = Math.floor(suggestedSalary);
+    
+    // Calculate maximum available dividend with new salary
+    ltdDividendsInput.value = calculateAvailableDividend();
+    
+    // Highlight the changes
+    ltdSalaryInput.style.backgroundColor = '#e7f3ff';
+    ltdDividendsInput.style.backgroundColor = '#e7f3ff';
+    
+    // Remove highlighting after 3 seconds
+    setTimeout(() => {
+        ltdSalaryInput.style.backgroundColor = '';
+        ltdDividendsInput.style.backgroundColor = '';
+    }, 3000);
+    
+    // Update calculations
+    handleInputChange();
+}
+
+// Handle tax-optimized distribution button click
+function handleTaxOptimizedDistribution() {
+    const grossIncome = parseFloat(grossIncomeInput.value) || 0;
+    const ltdExpenses = parseFloat(ltdExpensesInput.value) || 0;
+    const ltdPension = parseFloat(ltdEmployerPensionInput.value) || 0;
+    const ltdBikValue = parseFloat(ltdBikInput.value) || 0;
+    
+    // For tax optimization, set salary to Personal Allowance (most tax efficient)
+    const optimalSalary = TAX_CONFIG.personalAllowance;
+    
+    // Update salary
+    ltdSalaryInput.value = optimalSalary;
+    
+    // Calculate maximum available dividend with optimal salary
+    ltdDividendsInput.value = calculateAvailableDividend();
+    
+    // Highlight the changes
+    ltdSalaryInput.style.backgroundColor = '#e7f3ff';
+    ltdDividendsInput.style.backgroundColor = '#e7f3ff';
+    
+    // Remove highlighting after 3 seconds
+    setTimeout(() => {
+        ltdSalaryInput.style.backgroundColor = '';
+        ltdDividendsInput.style.backgroundColor = '';
+    }, 3000);
+    
+    // Update calculations
+    handleInputChange();
+}
+
 // --- Initial Setup and Event Listeners ---
 // Run when the page loads
 document.addEventListener('DOMContentLoaded', () => {
@@ -1141,4 +1232,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('save-scenario').addEventListener('click', saveScenario);
     document.getElementById('clear-scenarios').addEventListener('click', clearAllScenarios);
     document.getElementById('download-scenarios').addEventListener('click', handleDownloadScenarios);
+    
+    // Add event listener for Calculate Available Dividend button
+    const calculateAvailableDividendBtn = document.getElementById('calculate-available-btn');
+    if (calculateAvailableDividendBtn) {
+        calculateAvailableDividendBtn.addEventListener('click', function() {
+            // Calculate maximum available dividend and update the input
+            ltdDividendsInput.value = calculateAvailableDividend();
+            
+            // Highlight the change
+            ltdDividendsInput.style.backgroundColor = '#e7f3ff';
+            
+            // Remove highlighting after 3 seconds
+            setTimeout(() => {
+                ltdDividendsInput.style.backgroundColor = '';
+            }, 3000);
+            
+            // Update calculations
+            handleInputChange();
+        });
+    }
+    
+    // Add event listeners for distribution options
+    const autoDistributeBtn = document.getElementById('auto-distribute-btn');
+    if (autoDistributeBtn) {
+        autoDistributeBtn.addEventListener('click', handleAutoDistribute);
+    }
+    
+    const maxDividendsBtn = document.getElementById('max-dividends-btn');
+    if (maxDividendsBtn) {
+        maxDividendsBtn.addEventListener('click', handleTaxOptimizedDistribution);
+    }
 });

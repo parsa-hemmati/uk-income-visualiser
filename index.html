@@ -21,10 +21,8 @@
                             <button type="button" class="control-btn decrement" data-target="gross-income" data-amount="1000">−</button>
                         </div>
                         <div class="link-buttons-container">
-                            <span class="link-label">Impact on Ltd Co:</span>
+                            <span class="link-label">Impact on Business:</span>
                             <div class="link-buttons">
-                                <button type="button" class="link-btn" data-source="gross-income" data-target="ltd-auto-distribute" title="Distribute any added income between salary and dividends">Auto-Distribute</button>
-                                <button type="button" class="link-btn" data-source="gross-income" data-target="ltd-salary-dividends" title="Maximize dividends after covering salary">Maximize Dividends</button>
                                 <button type="button" class="link-btn" data-source="gross-income" data-target="expenses-ratio" title="Adjust expenses based on turnover ratio">Adjust Expenses</button>
                                 <button type="button" class="link-btn active" data-source="gross-income" data-target="none" title="No automatic adjustments">None</button>
                             </div>
@@ -196,7 +194,16 @@
                             <button type="button" class="control-btn increment" data-target="ltd-dividends" data-amount="100">+</button>
                             <button type="button" class="control-btn decrement" data-target="ltd-dividends" data-amount="100">−</button>
                         </div>
-                        <div class="link-buttons-container">
+                    <div class="link-buttons-container income-options-container">
+                        <div class="link-header">
+                            <span class="link-label">Distribution Options:</span>
+                            <div class="link-buttons">
+                                <button type="button" class="link-btn" id="auto-distribute-btn" data-source="income-options" data-target="ltd-auto-distribute" title="Distribute available funds between salary and dividends">Auto-Distribute</button>
+                                <button type="button" class="link-btn" id="max-dividends-btn" data-source="income-options" data-target="ltd-salary-dividends" title="Set optimal salary and maximize dividends">Tax Optimized</button>
+                                <button type="button" class="link-btn active" data-source="income-options" data-target="none" title="No automatic adjustments">Manual</button>
+                            </div>
+                        </div>
+                        <div class="link-header">
                             <span class="link-label">Source funds from:</span>
                             <div class="link-buttons">
                                 <button type="button" class="link-btn" data-source="ltd-dividends" data-target="monthly-expenses" title="When increasing dividends, reduce monthly personal expenses">Personal</button>
@@ -205,6 +212,8 @@
                                 <button type="button" class="link-btn active" data-source="ltd-dividends" data-target="none" title="No automatic transfers">None</button>
                             </div>
                         </div>
+                    </div>
+                    <button id="calculate-available-btn" class="action-btn" title="Calculate and set the maximum available dividend based on current turnover, expenses, and salary">Calculate Available Dividend</button>
                     </div>
                 </div>
             </div>
