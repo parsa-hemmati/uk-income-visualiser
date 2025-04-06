@@ -224,6 +224,7 @@ h1, h2, h3 {
 .input-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Ensure fixed widths */
 }
 
 .input-header-row {
@@ -238,11 +239,13 @@ h1, h2, h3 {
     text-align: center;
     font-weight: bold;
     border-left: 1px solid #ddd;
+    width: 23.3%; /* Match result table column width */
 }
 
 .input-header:first-child {
-    flex: 0.6; /* Make the first column (labels) narrower */
+    flex: 0.8; /* More space for labels */
     border-left: none;
+    width: 30%; /* Match result table first column */
 }
 
 /* Input Rows */
@@ -258,8 +261,9 @@ h1, h2, h3 {
 }
 
 .input-label {
-    flex: 0.6;
+    flex: 0.8;  /* Match with header proportion */
     padding-right: 15px;
+    width: 30%; /* Match results table first column */
 }
 
 .input-label h3 {
@@ -279,6 +283,7 @@ h1, h2, h3 {
     flex: 1;
     padding: 0 10px;
     border-left: 1px solid #eee;
+    width: 23.3%; /* Match results table column */
 }
 
 .input-cell label {
@@ -343,13 +348,15 @@ h1, h2, h3 {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    table-layout: fixed; /* Ensure fixed widths */
 }
 
 #results-table th, #results-table td {
     border: 1px solid #ddd;
-    padding: 8px 12px;
+    padding: 10px 12px; /* Match input table padding */
     text-align: right;
     vertical-align: top;
+    width: 23.3%; /* Match input table cells */
 }
 
 #results-table th {
@@ -358,11 +365,12 @@ h1, h2, h3 {
     font-weight: bold;
 }
 
+#results-table th:first-child,
 #results-table td:first-child {
+    width: 30%; /* Match input table first column */
     text-align: left;
     font-weight: bold;
     background-color: #f9f9f9;
-    width: 30%; /* Give metric column more space */
 }
 
 #results-table td {
