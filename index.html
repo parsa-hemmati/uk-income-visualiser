@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UK Income Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>UK Income Visualizer</h1>
+
+    <div class="input-section common-inputs">
+        <h2>Common Inputs</h2>
+        <div class="input-row">
+            <div class="input-cell">
+                <label for="gross-income">Annual Gross Income / Company Turnover (£): <span class="tooltip" title="Employed: Your total salary before any tax, NI, or pension deductions. Sole Trader/Ltd Co: Your total business revenue/sales before deducting any business expenses.">?</span></label>
+                <input type="number" id="gross-income" value="50000" step="1000">
+            </div>
+            <div class="input-cell">
+                <label for="monthly-expenses">Monthly Personal Expenses (£): <span class="tooltip" title="Your average essential personal living costs per month (e.g., rent/mortgage, utilities, food, council tax, essential travel). This is multiplied by 12 and subtracted from Take-Home Pay to estimate annual Disposable Income.">?</span></label>
+                <input type="number" id="monthly-expenses" value="1500" step="100">
+            </div>
+        </div>
+    </div>
+
+    <div class="input-section scenario-inputs">
+        <h2>Structure-Specific Inputs</h2>
+        
+        <div class="input-table">
+            <div class="input-header-row">
+                <div class="input-header"></div>
+                <div class="input-header">Employed (PAYE)</div>
+                <div class="input-header">Self-Employed (Sole Trader)</div>
+                <div class="input-header">Limited Company</div>
+            </div>
+            
+            <!-- Business Expenses Row -->
+            <div class="input-row">
+                <div class="input-label">
+                    <h3>Business Expenses</h3>
+                    <p class="help-text">Annual costs wholly & exclusively for business purposes</p>
+                </div>
+                <div class="input-cell">
+                    <p class="not-applicable">N/A</p>
+                </div>
+                <div class="input-cell">
+                    <label for="st-expenses">Allowable Expenses (£): <span class="tooltip" title="Enter the total annual costs incurred 'wholly and exclusively' for your business (e.g., materials, office costs, travel). This reduces your taxable profit.">?</span></label>
+                    <input type="number" id="st-expenses" value="8000" step="100">
+                </div>
+                <div class="input-cell">
+                    <label for="ltd-expenses">Allowable Expenses (£): <span class="tooltip" title="Costs the company incurs 'wholly and exclusively' for business (e.g., software, insurance, accountancy). Reduces profit subject to Corporation Tax.">?</span></label>
+                    <input type="number" id="ltd-expenses" value="5000" step="100">
+                </div>
+            </div>
+            
+            <!-- Pension Row -->
+            <div class="input-row">
+                <div class="input-label">
+                    <h3>Pension Contributions</h3>
+                    <p class="help-text">Tax-efficient retirement savings</p>
+                </div>
+                <div class="input-cell">
+                    <label for="employed-pension-pct">Employee Contribution (% of Gross): <span class="tooltip" title="Enter your contribution percentage (e.g., 5 for 5%). This reduces your taxable income. Check your pension scheme rules for how this is calculated (e.g., on qualifying earnings vs total gross).">?</span></label>
+                    <input type="number" id="employed-pension-pct" value="5" step="1">
+                </div>
+                <div class="input-cell">
+                    <label for="st-pension-pct">Personal Contribution (% of Profit): <span class="tooltip" title="Enter your contribution percentage (e.g., 5 for 5%), calculated on Profit (Gross Income - Business Expenses). Reduces profit subject to Income Tax and Class 4 NI.">?</span></label>
+                    <input type="number" id="st-pension-pct" value="5" step="1">
+                </div>
+                <div class="input-cell">
+                    <label for="ltd-employer-pension">Employer Contribution (£): <span class="tooltip" title="Contribution the company makes to the director's pension. Highly tax-efficient: it's a deductible expense for Corporation Tax and isn't taxed as income for the director.">?</span></label>
+                    <input type="number" id="ltd-employer-pension" value="0" step="100">
+                </div>
+            </div>
+            
+            <!-- Benefits in Kind Row -->
+            <div class="input-row">
+                <div class="input-label">
+                    <h3>Benefits in Kind (BiK)</h3>
+                    <p class="help-text">Non-cash benefits (car, insurance, etc.)</p>
+                </div>
+                <div class="input-cell">
+                    <label for="employed-bik">Taxable Value (£): <span class="tooltip" title="The cash equivalent value of non-cash benefits (e.g., company car, private medical insurance). This value is added to your Gross Income for Income Tax calculation (but usually not for NI). Find this on your P11D form or ask your employer.">?</span></label>
+                    <input type="number" id="employed-bik" value="0" step="100">
+                </div>
+                <div class="input-cell">
+                    <p class="not-applicable">N/A</p>
+                </div>
+                <div class="input-cell">
+                    <label for="ltd-bik">Director's Taxable Value (£): <span class="tooltip" title="Value of non-cash benefits the company provides (e.g., car, health insurance). Added to director's income for personal Income Tax. Company also pays Employer Class 1A NI (13.8%) on this value, which is a deductible expense for Corporation Tax.">?</span></label>
+                    <input type="number" id="ltd-bik" value="0" step="100">
+                </div>
+            </div>
+            
+            <!-- Ltd Co Specific Row -->
+            <div class="input-row">
+                <div class="input-label">
+                    <h3>Income Structure</h3>
+                    <p class="help-text">How income is extracted (Ltd Co only)</p>
+                </div>
+                <div class="input-cell">
+                    <p class="not-applicable">Via Employer</p>
+                </div>
+                <div class="input-cell">
+                    <p class="not-applicable">Via Self-employment</p>
+                </div>
+                <div class="input-cell">
+                    <label for="ltd-salary">Director's Salary (£): <span class="tooltip" title="Salary the company pays the director. Taxable via PAYE (Income Tax & NI). It's a deductible expense for the company's Corporation Tax calculation. Often set around NI thresholds for tax efficiency.">?</span></label>
+                    <input type="number" id="ltd-salary" value="12570" step="100">
+                    <br>
+                    <label for="ltd-dividends">Dividends (£): <span class="tooltip" title="Amount the director plans to take as dividends. Paid from company profits *after* Corporation Tax. Taxed personally at lower Dividend Tax rates. Cannot exceed available post-tax profit.">?</span></label>
+                    <input type="number" id="ltd-dividends" value="20000" step="100">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="results-section">
+        <h2>Results Comparison</h2>
+        <table id="results-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Employed (PAYE)</th>
+                    <th>Self-Employed (Sole Trader)</th>
+                    <th>Limited Company (Director)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Income -->
+                <tr class="highlight-row">
+                    <td><span class="tooltip" title="The cash you actually receive after all taxes, NI, and personal pension contributions are deducted.">Take-Home Pay</span></td>
+                    <td id="employed-take-home-cell">£0</td>
+                    <td id="st-take-home-cell">£0</td>
+                    <td id="ltd-take-home-cell">£0</td>
+                </tr>
+                <tr class="highlight-row">
+                    <td><span class="tooltip" title="Take-Home Pay minus your estimated annual personal essential expenses. Represents money available for saving, investment, or discretionary spending.">Disposable Income</span></td>
+                    <td id="employed-disposable-cell">£0</td>
+                    <td id="st-disposable-cell">£0</td>
+                    <td id="ltd-disposable-cell">£0</td>
+                </tr>
+                <!-- Personal Deductions -->
+                 <tr><td colspan="4" class="separator">Personal Deductions</td></tr>
+                 <tr>
+                    <td><span class="tooltip" title="Calculated on your taxable income/profit after relevant allowances and reliefs (e.g., Personal Allowance, pension contributions).">Income Tax</span></td>
+                    <td id="employed-tax-cell">£0</td>
+                    <td id="st-tax-cell">£0</td>
+                    <td id="ltd-pers-tax-cell">£0</td>
+                </tr>
+                 <tr>
+                    <td><span class="tooltip" title="Employee Class 1 NI (Employed/Ltd Salary) or Self-Employed Class 4 NI. Calculated on relevant earnings/profits above thresholds.">Personal National Insurance</span></td>
+                    <td id="employed-ni-cell">£0</td>
+                    <td id="st-ni4-cell">£0</td>
+                    <td id="ltd-pers-ni-cell">£0</td>
+                </tr>
+                 <tr>
+                    <td><span class="tooltip" title="Your personal pension contribution (calculated from % input). Reduces taxable income/profit.">Personal Pension Contribution</span></td>
+                    <td id="employed-pension-contrib-cell">£0</td>
+                    <td id="st-pension-contrib-cell">£0</td>
+                    <td>N/A</td> <!-- Employer contribution shown under company costs -->
+                </tr>
+                 <!-- Company Costs/Metrics (Ltd Co specific) -->
+                 <tr><td colspan="4" class="separator">Company Metrics (Ltd Co)</td></tr>
+                 <tr>
+                    <td><span class="tooltip" title="Profit calculated as Turnover minus Business Expenses.">Profit (Sole Trader, before tax/pension)</span></td>
+                    <td>N/A</td>
+                    <td id="st-profit-cell">£0</td>
+                    <td>N/A</td>
+                </tr>
+                 <tr>
+                    <td><span class="tooltip" title="Tax paid by the Limited Company on its profits after all deductible expenses (including salary, employer NI, employer pension).">Corporation Tax</span></td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td id="ltd-corp-tax-cell">£0</td>
+                </tr>
+                 <tr>
+                    <td><span class="tooltip" title="Employer's Class 1 Secondary NI paid by the company on director's salary.">Employer NI (on Salary)</span></td>
+                     <td>N/A</td>
+                     <td>N/A</td>
+                    <td id="ltd-emp-ni-salary-cell">£0</td>
+                </tr>
+                 <tr>
+                    <td><span class="tooltip" title="Employer's Class 1A NI paid by the company on Benefits in Kind provided to the director.">Employer NI (on BiK)</span></td>
+                     <td>N/A</td>
+                     <td>N/A</td>
+                    <td id="ltd-emp-ni-bik-cell">£0</td>
+                </tr>
+                 <tr>
+                    <td><span class="tooltip" title="Pension contribution made by the company (deductible expense for Corp Tax).">Employer Pension Contribution</span></td>
+                     <td>N/A</td>
+                     <td>N/A</td>
+                    <td id="ltd-emp-pension-contrib-cell">£0</td> <!-- Need ID for this -->
+                </tr>
+                 <tr>
+                    <td><span class="tooltip" title="Actual dividends paid to the director, potentially capped by available post-tax profit.">Dividends Paid</span></td>
+                     <td>N/A</td>
+                     <td>N/A</td>
+                    <td id="ltd-actual-dividends-cell">£0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

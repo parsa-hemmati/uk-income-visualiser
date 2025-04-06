@@ -1,0 +1,405 @@
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 20px;
+    background-color: #f4f4f4;
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+.input-section, .results-section {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-section input[type="number"] {
+    width: 150px;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.results-section h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.results-section div { /* Style each result block */
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #eee;
+}
+
+.results-section div:last-child {
+    border-bottom: none; /* Remove border from the last result block */
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.results-section h3 {
+    margin-top: 0;
+    color: #555;
+}
+
+.results-section p {
+    margin: 5px 0;
+}
+
+.results-section span { /* Style the result values */
+    font-weight: bold;
+    color: #007bff; /* A blue color for emphasis */
+}
+
+/* Styling for the Ltd Company specific inputs */
+.ltd-inputs {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.ltd-inputs label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: normal; /* Less emphasis than main label */
+    font-size: 0.9em;
+    color: #666;
+}
+
+.ltd-inputs input[type="number"] {
+    width: 120px; /* Slightly smaller width */
+    margin-bottom: 10px;
+}
+
+/* Styling for input explanations */
+.input-section small {
+    display: block;
+    font-size: 0.8em;
+    color: #888;
+    margin-top: -10px; /* Pull up slightly */
+    margin-bottom: 15px; /* Add space below */
+}
+
+/* Styling for results breakdown */
+.deductions {
+    font-size: 0.9em;
+    color: #555;
+    background-color: #f0f0f0;
+    padding: 10px 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.deductions p {
+    margin: 3px 0;
+    display: flex; /* Use flexbox for alignment */
+    justify-content: space-between; /* Space out label and value */
+}
+
+.deductions span {
+    font-weight: bold;
+    color: #d9534f; /* Reddish color for deductions */
+    margin-left: 10px; /* Space between label and value */
+}
+
+/* Specific overrides for positive values if needed */
+#st-profit, #ltd-actual-dividends {
+    color: #5cb85c; /* Green for profit/dividends */
+}
+
+/* Styling for Pension inputs */
+.pension-inputs {
+    margin-top: 15px;
+    padding: 10px 15px; /* Slightly less padding */
+    border: 1px dashed #e0e0e0; /* Dashed border to differentiate */
+    border-radius: 5px;
+    background-color: #fafafa; /* Slightly different background */
+}
+
+.pension-inputs label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: normal;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.pension-inputs input[type="number"] {
+    width: 80px; /* Smaller width for percentages/amounts */
+    margin-bottom: 5px; /* Less margin */
+}
+
+/* Styling for BiK inputs */
+.bik-inputs {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border: 1px dashed #e0e0e0;
+    border-radius: 5px;
+    background-color: #fafafa;
+}
+
+.bik-inputs label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: normal;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.bik-inputs input[type="number"] {
+    width: 120px; /* Match other expense inputs */
+    margin-bottom: 5px;
+}
+
+.bik-inputs small {
+    display: block;
+    font-size: 0.8em;
+    color: #888;
+    margin-top: -5px;
+}
+
+.ltd-inputs small {
+    display: block;
+    font-size: 0.8em;
+    color: #888;
+    margin-top: -5px;
+}
+
+/* Styling for the Sole Trader specific inputs */
+.st-inputs {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.st-inputs label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: normal;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.st-inputs input[type="number"] {
+    width: 120px;
+    margin-bottom: 10px;
+}
+
+/* Styling for Input Sections */
+.common-inputs, .scenario-inputs {
+    /* Keep general input section styling */
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.scenario-inputs h2, .common-inputs h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+/* Input Table Styling */
+.input-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.input-header-row {
+    display: flex;
+    background-color: #f2f2f2;
+    border-bottom: 2px solid #ddd;
+}
+
+.input-header {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border-left: 1px solid #ddd;
+}
+
+.input-header:first-child {
+    flex: 0.6; /* Make the first column (labels) narrower */
+    border-left: none;
+}
+
+/* Input Rows */
+.input-row {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    align-items: flex-start;
+    padding: 15px 0;
+}
+
+.input-row:last-child {
+    border-bottom: none;
+}
+
+.input-label {
+    flex: 0.6;
+    padding-right: 15px;
+}
+
+.input-label h3 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    color: #444;
+}
+
+.help-text {
+    margin: 0;
+    font-size: 0.8em;
+    color: #777;
+    font-style: italic;
+}
+
+.input-cell {
+    flex: 1;
+    padding: 0 10px;
+    border-left: 1px solid #eee;
+}
+
+.input-cell label {
+    display: block;
+    margin-bottom: 3px;
+    font-weight: normal;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.input-cell input[type="number"] {
+    width: 120px; /* Consistent smaller width */
+    padding: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.not-applicable {
+    color: #999;
+    font-style: italic;
+    padding-top: 8px;
+}
+
+/* Common inputs row */
+.common-inputs .input-row {
+    display: flex;
+    gap: 30px; /* Space between input cells */
+    border-bottom: none;
+}
+
+.common-inputs .input-cell {
+    flex: 1;
+    border: none;
+    padding: 0;
+}
+
+.common-inputs input[type="number"] {
+    width: 150px; /* Slightly wider for these common inputs */
+}
+
+
+/* Tooltip Styling */
+.tooltip {
+    position: relative; /* Needed for potential custom tooltips later */
+    cursor: help; /* Show help cursor on hover */
+    border-bottom: 1px dotted #007bff; /* Indicate interactivity - using theme blue */
+    display: inline-block; /* Ensure it behaves well inline */
+    margin-left: 4px; /* Add a little space before the question mark */
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Hide the actual text span if we only want the question mark */
+/* span.tooltip > span { display: none; } */ /* Uncomment if needed */
+
+/* Basic styling for the title attribute tooltip (browser default) */
+/* No extra CSS needed for the default browser tooltip */
+
+/* Results Table Styling */
+#results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#results-table th, #results-table td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: right;
+    vertical-align: top;
+}
+
+#results-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+    font-weight: bold;
+}
+
+#results-table td:first-child {
+    text-align: left;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    width: 30%; /* Give metric column more space */
+}
+
+#results-table td {
+    font-family: monospace; /* Use monospace for numbers */
+    font-size: 0.95em;
+}
+
+#results-table .highlight-row td {
+    font-weight: bold;
+    background-color: #e7f3ff; /* Light blue highlight for key results */
+}
+#results-table .highlight-row td:first-child {
+     background-color: #d0e8ff; /* Slightly darker blue for metric label */
+}
+
+
+#results-table .separator td {
+    background-color: #e9ecef;
+    font-weight: bold;
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    padding: 5px;
+    border-left: none;
+    border-right: none;
+}
+
+/* Ensure tooltips within table cells work well */
+#results-table .tooltip {
+    border-bottom: none; /* Remove dotted line within table */
+    margin-left: 0; /* Reset margin */
+    font-weight: normal; /* Reset font weight */
+    color: inherit; /* Inherit color */
+    display: inline; /* Ensure it doesn't break layout */
+}
+#results-table td:first-child .tooltip {
+     border-bottom: 1px dotted #007bff; /* Add back for metric labels */
+     font-weight: bold; /* Keep bold for metric labels */
+     color: #007bff;
+}
