@@ -577,6 +577,12 @@ h2, h3 {
     text-align: center;
 }
 
+#scenarios-table tr.subheader th {
+    background-color: #1a3f77;
+    font-size: 0.85em;
+    padding: 8px 5px;
+}
+
 #scenarios-table th:first-child,
 #scenarios-table td:first-child {
     text-align: left;
@@ -654,8 +660,8 @@ h2, h3 {
 }
 
 #results-table td {
-    font-family: monospace; /* Use monospace for numbers */
     font-size: 0.95em;
+    font-family: inherit; /* Use the same font as the rest of the application */
 }
 
 #results-table .highlight-row td {

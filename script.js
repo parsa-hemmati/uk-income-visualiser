@@ -666,7 +666,7 @@ function updateScenariosTable() {
         maximumFractionDigits: 0
     });
     
-    // Add each scenario to the table
+// Add each scenario to the table
     scenarios.forEach(scenario => {
         const row = document.createElement('tr');
         
@@ -680,10 +680,25 @@ function updateScenariosTable() {
         grossCell.textContent = formatter.format(scenario.inputs.grossIncome);
         row.appendChild(grossCell);
         
-        // Monthly expenses (annualized)
+        // Monthly expenses
         const expensesCell = document.createElement('td');
-        expensesCell.textContent = formatter.format(scenario.inputs.monthlyExpenses * 12);
+        expensesCell.textContent = formatter.format(scenario.inputs.monthlyExpenses);
         row.appendChild(expensesCell);
+        
+        // Business expenses
+        const stExpensesCell = document.createElement('td');
+        stExpensesCell.textContent = formatter.format(scenario.inputs.stExpenses);
+        row.appendChild(stExpensesCell);
+        
+        // Ltd salary
+        const ltdSalaryCell = document.createElement('td');
+        ltdSalaryCell.textContent = formatter.format(scenario.inputs.ltdSalary);
+        row.appendChild(ltdSalaryCell);
+        
+        // Ltd dividends
+        const ltdDividendsCell = document.createElement('td');
+        ltdDividendsCell.textContent = formatter.format(scenario.inputs.ltdDividends);
+        row.appendChild(ltdDividendsCell);
         
         // Take-home results for each scenario
         const employedTakeHomeCell = document.createElement('td');
@@ -697,6 +712,19 @@ function updateScenariosTable() {
         const ltdTakeHomeCell = document.createElement('td');
         ltdTakeHomeCell.textContent = formatter.format(scenario.results.ltdTakeHome);
         row.appendChild(ltdTakeHomeCell);
+        
+        // Disposable income for each scenario
+        const employedDisposableCell = document.createElement('td');
+        employedDisposableCell.textContent = formatter.format(scenario.results.employedDisposable);
+        row.appendChild(employedDisposableCell);
+        
+        const stDisposableCell = document.createElement('td');
+        stDisposableCell.textContent = formatter.format(scenario.results.stDisposable);
+        row.appendChild(stDisposableCell);
+        
+        const ltdDisposableCell = document.createElement('td');
+        ltdDisposableCell.textContent = formatter.format(scenario.results.ltdDisposable);
+        row.appendChild(ltdDisposableCell);
         
         // Actions cell
         const actionsCell = document.createElement('td');
