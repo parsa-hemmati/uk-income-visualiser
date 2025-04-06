@@ -422,13 +422,17 @@ function handleInputChange() {
 
 // --- Increment/Decrement and Linking Functionality ---
 const linkExpensesCheckbox = document.getElementById('link-expenses');
-const monthlyExpensesLinkSelect = document.getElementById('monthly-expenses-link');
-const stExpensesLinkSelect = document.getElementById('st-expenses-link');
-const ltdExpensesLinkSelect = document.getElementById('ltd-expenses-link');
-const ltdSalaryLinkSelect = document.getElementById('ltd-salary-link');
-const ltdDividendsLinkSelect = document.getElementById('ltd-dividends-link');
 
-// Handle linking between Sole Trader and Ltd Company expenses
+// Store active link targets for each source field
+const activeLinkTargets = {
+    'monthly-expenses': 'none',
+    'st-expenses': 'none',
+    'ltd-expenses': 'none',
+    'ltd-salary': 'none',
+    'ltd-dividends': 'none'
+};
+
+// Handle linking between Sole Trader and Ltd Company expenses via checkbox
 function handleExpensesLinking() {
     if (linkExpensesCheckbox.checked) {
         // When linking is enabled, sync Ltd expenses to match Sole Trader expenses
@@ -440,6 +444,26 @@ function handleExpensesLinking() {
     }
     handleInputChange(); // Update calculations
 }
+
+// Handle clicks on the link buttons
+document.querySelectorAll('.link-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const sourceId = this.getAttribute('data-source');
+        const targetId = this.getAttribute('data-target');
+        
+        // Get all link buttons for this source
+        const siblingButtons = document.querySelectorAll(`.link-btn[data-source="${sourceId}"]`);
+        
+        // Remove active class from all sibling buttons
+        siblingButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to the clicked button
+        this.classList.add('active');
+        
+        // Store the active target for this source
+        activeLinkTargets[sourceId] = targetId;
+    });
+});
 
 // Helper function to convert monthly value to annual and vice versa
 function monthlyToAnnual(value) {
@@ -472,42 +496,45 @@ document.querySelectorAll('.control-btn').forEach(button => {
         // Update the target input value
         targetInput.value = newValue;
         
-        // Get the linked field selector
-        const linkSelectId = `${targetId}-link`;
-        const linkSelect = document.getElementById(linkSelectId);
+        // Get the linked field target from our stored active targets
+        const linkedTarget = activeLinkTargets[targetId];
         
-        if (linkSelect && linkSelect.value !== 'none') {
-            // Get the linked field and update it with the inverse change
-            const linkedField = document.getElementById(linkSelect.value);
-            
-            if (linkedField) {
-                let linkedCurrentValue = parseFloat(linkedField.value) || 0;
-                
-                // For monthly expenses to annual expenses, convert monthly change to annual
+        if (linkedTarget !== 'none') {
+            // Special handling for "both-expenses" option
+            if (linkedTarget === 'both-expenses') {
+                // For monthly expenses to annual expenses, need to convert
                 let changeAmount = amount;
-                if (targetId === 'monthly-expenses' && linkedField.id.includes('expenses')) {
+                if (targetId === 'monthly-expenses') {
                     changeAmount = monthlyToAnnual(amount);
-                } else if (linkedField.id === 'monthly-expenses' && targetId.includes('expenses')) {
-                    changeAmount = annualToMonthly(amount);
                 }
                 
-                // Apply inverse change to the linked field (addition becomes subtraction and vice versa)
-                let newLinkedValue = isIncrement 
-                    ? linkedCurrentValue - changeAmount 
-                    : linkedCurrentValue + changeAmount;
-                    
-                // Ensure linked value doesn't go below zero
-                newLinkedValue = Math.max(0, newLinkedValue);
+                // Update both business expense fields with opposite direction change
+                stExpensesInput.value = Math.max(0, parseFloat(stExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
+                if (!linkExpensesCheckbox.checked) {
+                    ltdExpensesInput.value = Math.max(0, parseFloat(ltdExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
+                }
+            } else {
+                // Normal single field update
+                const linkedField = document.getElementById(linkedTarget);
                 
-                // Special handling for "both-expenses" option
-                if (linkSelect.value === 'both-expenses') {
-                    // Update both business expense fields
-                    stExpensesInput.value = Math.max(0, parseFloat(stExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
-                    if (!linkExpensesCheckbox.checked) {
-                        ltdExpensesInput.value = Math.max(0, parseFloat(ltdExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
+                if (linkedField) {
+                    let linkedCurrentValue = parseFloat(linkedField.value) || 0;
+                    
+                    // For monthly expenses to annual expenses, convert monthly change to annual
+                    let changeAmount = amount;
+                    if (targetId === 'monthly-expenses' && linkedField.id.includes('expenses')) {
+                        changeAmount = monthlyToAnnual(amount);
+                    } else if (linkedField.id === 'monthly-expenses' && targetId.includes('expenses')) {
+                        changeAmount = annualToMonthly(amount);
                     }
-                } else {
-                    // Normal single field update
+                    
+                    // Apply inverse change to the linked field (addition becomes subtraction and vice versa)
+                    let newLinkedValue = isIncrement 
+                        ? linkedCurrentValue - changeAmount 
+                        : linkedCurrentValue + changeAmount;
+                        
+                    // Ensure linked value doesn't go below zero
+                    newLinkedValue = Math.max(0, newLinkedValue);
                     linkedField.value = newLinkedValue;
                 }
             }

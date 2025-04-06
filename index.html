@@ -24,12 +24,15 @@
                         <button type="button" class="control-btn increment" data-target="monthly-expenses" data-amount="100">+</button>
                         <button type="button" class="control-btn decrement" data-target="monthly-expenses" data-amount="100">−</button>
                     </div>
-                    <select id="monthly-expenses-link" class="link-select">
-                        <option value="none">No linked change</option>
-                        <option value="st-expenses">Add to Sole Trader expenses</option>
-                        <option value="ltd-expenses">Add to Ltd Co expenses</option>
-                        <option value="both-expenses">Add to both business expenses</option>
-                    </select>
+                    <div class="link-buttons-container">
+                        <span class="link-label">Move funds to:</span>
+                        <div class="link-buttons">
+                            <button type="button" class="link-btn" data-source="monthly-expenses" data-target="st-expenses" title="When reducing personal expenses, add to Sole Trader business expenses">ST Expenses</button>
+                            <button type="button" class="link-btn" data-source="monthly-expenses" data-target="ltd-expenses" title="When reducing personal expenses, add to Ltd Company business expenses">Ltd Expenses</button>
+                            <button type="button" class="link-btn" data-source="monthly-expenses" data-target="both-expenses" title="When reducing personal expenses, add to both business expenses">Both Business</button>
+                            <button type="button" class="link-btn active" data-source="monthly-expenses" data-target="none" title="No automatic transfers">None</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -69,12 +72,15 @@
                             <button type="button" class="control-btn increment" data-target="st-expenses" data-amount="100">+</button>
                             <button type="button" class="control-btn decrement" data-target="st-expenses" data-amount="100">−</button>
                         </div>
-                        <select id="st-expenses-link" class="link-select">
-                            <option value="none">No linked change</option>
-                            <option value="monthly-expenses">Reduce personal expenses</option>
-                            <option value="ltd-salary">Reduce Ltd salary</option>
-                            <option value="ltd-dividends">Reduce dividends</option>
-                        </select>
+                        <div class="link-buttons-container">
+                            <span class="link-label">Source funds from:</span>
+                            <div class="link-buttons">
+                                <button type="button" class="link-btn" data-source="st-expenses" data-target="monthly-expenses" title="When increasing expenses, reduce monthly personal expenses">Personal</button>
+                                <button type="button" class="link-btn" data-source="st-expenses" data-target="ltd-salary" title="When increasing expenses, reduce Ltd salary">Salary</button>
+                                <button type="button" class="link-btn" data-source="st-expenses" data-target="ltd-dividends" title="When increasing expenses, reduce Ltd dividends">Dividends</button>
+                                <button type="button" class="link-btn active" data-source="st-expenses" data-target="none" title="No automatic transfers">None</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="input-cell">
@@ -85,12 +91,15 @@
                             <button type="button" class="control-btn increment" data-target="ltd-expenses" data-amount="100">+</button>
                             <button type="button" class="control-btn decrement" data-target="ltd-expenses" data-amount="100">−</button>
                         </div>
-                        <select id="ltd-expenses-link" class="link-select">
-                            <option value="none">No linked change</option>
-                            <option value="monthly-expenses">Reduce personal expenses</option>
-                            <option value="ltd-salary">Reduce Ltd salary</option>
-                            <option value="ltd-dividends">Reduce dividends</option>
-                        </select>
+                        <div class="link-buttons-container">
+                            <span class="link-label">Source funds from:</span>
+                            <div class="link-buttons">
+                                <button type="button" class="link-btn" data-source="ltd-expenses" data-target="monthly-expenses" title="When increasing expenses, reduce monthly personal expenses">Personal</button>
+                                <button type="button" class="link-btn" data-source="ltd-expenses" data-target="ltd-salary" title="When increasing expenses, reduce Ltd salary">Salary</button>
+                                <button type="button" class="link-btn" data-source="ltd-expenses" data-target="ltd-dividends" title="When increasing expenses, reduce Ltd dividends">Dividends</button>
+                                <button type="button" class="link-btn active" data-source="ltd-expenses" data-target="none" title="No automatic transfers">None</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -154,12 +163,15 @@
                             <button type="button" class="control-btn increment" data-target="ltd-salary" data-amount="100">+</button>
                             <button type="button" class="control-btn decrement" data-target="ltd-salary" data-amount="100">−</button>
                         </div>
-                        <select id="ltd-salary-link" class="link-select">
-                            <option value="none">No linked change</option>
-                            <option value="ltd-dividends">Reduce dividends</option>
-                            <option value="monthly-expenses">Reduce personal expenses</option>
-                            <option value="ltd-expenses">Add to business expenses</option>
-                        </select>
+                        <div class="link-buttons-container">
+                            <span class="link-label">Source funds from:</span>
+                            <div class="link-buttons">
+                                <button type="button" class="link-btn" data-source="ltd-salary" data-target="monthly-expenses" title="When increasing salary, reduce monthly personal expenses">Personal</button>
+                                <button type="button" class="link-btn" data-source="ltd-salary" data-target="ltd-dividends" title="When increasing salary, reduce dividends">Dividends</button>
+                                <button type="button" class="link-btn" data-source="ltd-salary" data-target="ltd-expenses" title="When increasing salary, reduce business expenses">Business</button>
+                                <button type="button" class="link-btn active" data-source="ltd-salary" data-target="none" title="No automatic transfers">None</button>
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <label for="ltd-dividends">Dividends (£): <span class="tooltip" title="Amount the director plans to take as dividends. Paid from company profits *after* Corporation Tax. Taxed personally at lower Dividend Tax rates. Cannot exceed available post-tax profit.">?</span></label>
@@ -169,12 +181,15 @@
                             <button type="button" class="control-btn increment" data-target="ltd-dividends" data-amount="100">+</button>
                             <button type="button" class="control-btn decrement" data-target="ltd-dividends" data-amount="100">−</button>
                         </div>
-                        <select id="ltd-dividends-link" class="link-select">
-                            <option value="none">No linked change</option>
-                            <option value="ltd-salary">Reduce salary</option>
-                            <option value="monthly-expenses">Reduce personal expenses</option>
-                            <option value="ltd-expenses">Add to business expenses</option>
-                        </select>
+                        <div class="link-buttons-container">
+                            <span class="link-label">Source funds from:</span>
+                            <div class="link-buttons">
+                                <button type="button" class="link-btn" data-source="ltd-dividends" data-target="monthly-expenses" title="When increasing dividends, reduce monthly personal expenses">Personal</button>
+                                <button type="button" class="link-btn" data-source="ltd-dividends" data-target="ltd-salary" title="When increasing dividends, reduce Ltd salary">Salary</button>
+                                <button type="button" class="link-btn" data-source="ltd-dividends" data-target="ltd-expenses" title="When increasing dividends, reduce business expenses">Business</button>
+                                <button type="button" class="link-btn active" data-source="ltd-dividends" data-target="none" title="No automatic transfers">None</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
