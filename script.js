@@ -284,8 +284,9 @@ function calculateLtdCompany(turnover, salary, businessExpenses, ltdEmployerPens
 
     // Taper PA based on *total* income (salary + BiK + actual dividends)
     let personalAllowance = config.personalAllowance;
-     if (totalIncomeForPersonalTax > config.paTaperThreshold) {
-        const reduction = Math.floor((totalPersonalIncome - config.paTaperThreshold) / 2);
+    if (totalIncomeForPersonalTax > config.paTaperThreshold) {
+        // NOTE: Fixed critical bug - previous code used incorrect variable name
+        const reduction = Math.floor((totalIncomeForPersonalTax - config.paTaperThreshold) / 2);
         personalAllowance = Math.max(0, config.personalAllowance - reduction);
     }
 
