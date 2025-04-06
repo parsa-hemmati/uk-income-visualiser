@@ -475,6 +475,34 @@ function annualToMonthly(value) {
     return value / 12;
 }
 
+// Ltd Company specific helper function to calculate optimal income distribution
+function calculateOptimalLtdDistribution(grossIncome, expenses, pensionContrib = 0, bik = 0) {
+    // Default to setting salary at Personal Allowance (tax efficient)
+    const optimalSalary = TAX_CONFIG.personalAllowance;
+    
+    // Calculate available profit after expenses 
+    const availableProfit = Math.max(0, grossIncome - expenses - pensionContrib - (bik * TAX_CONFIG.niClass1A_Rate));
+    
+    // Employer's NI on optimal salary
+    const employerNI = Math.max(0, optimalSalary - TAX_CONFIG.niEmployer_ST) * TAX_CONFIG.niEmployer_Rate;
+    
+    // Calculate profit after salary and NI
+    const profitAfterSalaryAndNI = Math.max(0, availableProfit - optimalSalary - employerNI);
+    
+    // Apply Corporate Tax
+    const corporateTaxRate = profitAfterSalaryAndNI <= TAX_CONFIG.ctSmallProfitThreshold ? 
+                            TAX_CONFIG.ctSmallProfitRate : TAX_CONFIG.corporationTaxRate;
+    const corporateTax = profitAfterSalaryAndNI * corporateTaxRate;
+    
+    // Available for dividends
+    const availableForDividends = Math.max(0, profitAfterSalaryAndNI - corporateTax);
+    
+    return {
+        salary: optimalSalary,
+        dividends: availableForDividends
+    };
+}
+
 // Handle increment/decrement button clicks
 document.querySelectorAll('.control-btn').forEach(button => {
     button.addEventListener('click', function() {
@@ -493,6 +521,61 @@ document.querySelectorAll('.control-btn').forEach(button => {
         
         // Ensure value doesn't go below 0
         newValue = Math.max(0, newValue);
+        
+        // Handle special case for gross income changes with Ltd Co linking
+        if (targetId === 'gross-income') {
+            const linkedLtdTarget = activeLinkTargets[targetId];
+            
+            if (linkedLtdTarget === 'ltd-auto-distribute' || linkedLtdTarget === 'ltd-salary-dividends') {
+                // Calculate the change amount
+                const changeAmount = newValue - currentValue;
+                
+                // Get current expenses, pension, and BiK values
+                const ltdExpenses = parseFloat(ltdExpensesInput.value) || 0;
+                const ltdPension = parseFloat(ltdEmployerPensionInput.value) || 0;
+                const ltdBikValue = parseFloat(ltdBikInput.value) || 0;
+                
+                if (linkedLtdTarget === 'ltd-auto-distribute') {
+                    // Auto-distribute: Divide any additional income 30% to salary, 70% to dividends
+                    // (after accounting for expenses, tax implications)
+                    
+                    // Update salary and dividends (simplified approach)
+                    const currentSalary = parseFloat(ltdSalaryInput.value) || 0;
+                    const currentDividends = parseFloat(ltdDividendsInput.value) || 0;
+                    
+                    // Calculate what portion goes to each (after expenses)
+                    const netChange = changeAmount * 0.8; // Assuming ~20% goes to various taxes/costs
+                    const salaryPortion = netChange * 0.3;
+                    const dividendsPortion = netChange * 0.7;
+                    
+                    // Update fields
+                    if (isIncrement) {
+                        ltdSalaryInput.value = Math.max(0, currentSalary + salaryPortion);
+                        ltdDividendsInput.value = Math.max(0, currentDividends + dividendsPortion);
+                    } else {
+                        // When reducing income, reduce proportionally
+                        const salaryReduction = Math.min(currentSalary, Math.abs(salaryPortion));
+                        const dividendsReduction = Math.min(currentDividends, Math.abs(dividendsPortion));
+                        
+                        ltdSalaryInput.value = Math.max(0, currentSalary - salaryReduction);
+                        ltdDividendsInput.value = Math.max(0, currentDividends - dividendsReduction);
+                    }
+                    
+                } else if (linkedLtdTarget === 'ltd-salary-dividends') {
+                    // Tax-optimized approach: Maximize dividend income
+                    // Set salary to Personal Allowance and distribute the rest to dividends
+                    
+                    // Calculate optimal distribution
+                    const optimalDistribution = calculateOptimalLtdDistribution(
+                        newValue, ltdExpenses, ltdPension, ltdBikValue
+                    );
+                    
+                    // Update fields with optimized values
+                    ltdSalaryInput.value = optimalDistribution.salary;
+                    ltdDividendsInput.value = optimalDistribution.dividends;
+                }
+            }
+        }
         
         // Update the target input value
         targetInput.value = newValue;
