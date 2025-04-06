@@ -575,12 +575,239 @@ ltdBikInput.addEventListener('input', handleInputChange);
 ltdDividendsInput.addEventListener('input', handleInputChange);
 
 
-// --- Initial Calculation ---
-// Run calculations when the page loads with the default values
+// --- Scenario Management ---
+// Functions to save, load, and manage scenarios using localStorage
+
+// Save the current scenario to localStorage
+function saveScenario() {
+    // Get scenario name, ensuring it's not empty
+    let scenarioName = document.getElementById('scenario-name').value.trim();
+    if (scenarioName === '') {
+        scenarioName = `Scenario ${new Date().toLocaleString()}`;
+        document.getElementById('scenario-name').value = scenarioName;
+    }
+    
+    // Get all input values
+    const inputs = {
+        grossIncome: parseFloat(grossIncomeInput.value) || 0,
+        monthlyExpenses: parseFloat(monthlyExpensesInput.value) || 0,
+        stExpenses: parseFloat(stExpensesInput.value) || 0,
+        ltdExpenses: parseFloat(ltdExpensesInput.value) || 0,
+        employedPensionPct: parseFloat(employedPensionPctInput.value) || 0,
+        stPensionPct: parseFloat(stPensionPctInput.value) || 0,
+        ltdEmployerPension: parseFloat(ltdEmployerPensionInput.value) || 0,
+        employedBik: parseFloat(employedBikInput.value) || 0,
+        ltdBik: parseFloat(ltdBikInput.value) || 0,
+        ltdSalary: parseFloat(ltdSalaryInput.value) || 0,
+        ltdDividends: parseFloat(ltdDividendsInput.value) || 0
+    };
+    
+    // Get current results
+    const results = {
+        employedTakeHome: parseFloat(document.getElementById('employed-take-home-cell').textContent.replace(/[£,]/g, '')) || 0,
+        stTakeHome: parseFloat(document.getElementById('st-take-home-cell').textContent.replace(/[£,]/g, '')) || 0,
+        ltdTakeHome: parseFloat(document.getElementById('ltd-take-home-cell').textContent.replace(/[£,]/g, '')) || 0,
+        employedDisposable: parseFloat(document.getElementById('employed-disposable-cell').textContent.replace(/[£,]/g, '')) || 0,
+        stDisposable: parseFloat(document.getElementById('st-disposable-cell').textContent.replace(/[£,]/g, '')) || 0,
+        ltdDisposable: parseFloat(document.getElementById('ltd-disposable-cell').textContent.replace(/[£,]/g, '')) || 0
+    };
+    
+    // Combine inputs and results
+    const scenario = {
+        id: Date.now(), // Generate a unique ID
+        name: scenarioName,
+        inputs,
+        results,
+        timestamp: new Date().toISOString()
+    };
+    
+    // Get existing scenarios or initialize empty array
+    let scenarios = JSON.parse(localStorage.getItem('ukIncomeScenarios') || '[]');
+    
+    // Add new scenario
+    scenarios.push(scenario);
+    
+    // Save back to localStorage
+    localStorage.setItem('ukIncomeScenarios', JSON.stringify(scenarios));
+    
+    // Update the scenarios table
+    updateScenariosTable();
+    
+    // Show a message or feedback
+    alert(`Scenario "${scenarioName}" saved successfully!`);
+}
+
+// Load saved scenarios from localStorage and update the table
+function updateScenariosTable() {
+    const scenarios = JSON.parse(localStorage.getItem('ukIncomeScenarios') || '[]');
+    const tableBody = document.getElementById('scenarios-table-body');
+    const noScenariosMessage = document.getElementById('no-scenarios-message');
+    const scenariosTable = document.getElementById('scenarios-table');
+    
+    // Clear table body
+    tableBody.innerHTML = '';
+    
+    if (scenarios.length === 0) {
+        // No scenarios - show message, hide table
+        noScenariosMessage.classList.remove('hidden');
+        scenariosTable.classList.add('hidden');
+        return;
+    }
+    
+    // Show table, hide message
+    noScenariosMessage.classList.add('hidden');
+    scenariosTable.classList.remove('hidden');
+    
+    // Format currency numbers
+    const formatter = new Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: 'GBP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
+    
+    // Add each scenario to the table
+    scenarios.forEach(scenario => {
+        const row = document.createElement('tr');
+        
+        // Scenario name
+        const nameCell = document.createElement('td');
+        nameCell.textContent = scenario.name;
+        row.appendChild(nameCell);
+        
+        // Gross income
+        const grossCell = document.createElement('td');
+        grossCell.textContent = formatter.format(scenario.inputs.grossIncome);
+        row.appendChild(grossCell);
+        
+        // Monthly expenses (annualized)
+        const expensesCell = document.createElement('td');
+        expensesCell.textContent = formatter.format(scenario.inputs.monthlyExpenses * 12);
+        row.appendChild(expensesCell);
+        
+        // Take-home results for each scenario
+        const employedTakeHomeCell = document.createElement('td');
+        employedTakeHomeCell.textContent = formatter.format(scenario.results.employedTakeHome);
+        row.appendChild(employedTakeHomeCell);
+        
+        const stTakeHomeCell = document.createElement('td');
+        stTakeHomeCell.textContent = formatter.format(scenario.results.stTakeHome);
+        row.appendChild(stTakeHomeCell);
+        
+        const ltdTakeHomeCell = document.createElement('td');
+        ltdTakeHomeCell.textContent = formatter.format(scenario.results.ltdTakeHome);
+        row.appendChild(ltdTakeHomeCell);
+        
+        // Actions cell
+        const actionsCell = document.createElement('td');
+        actionsCell.className = 'scenario-actions';
+        
+        // Load button
+        const loadBtn = document.createElement('button');
+        loadBtn.className = 'scenario-btn';
+        loadBtn.innerHTML = '&#8635;'; // Reload symbol
+        loadBtn.title = 'Load this scenario';
+        loadBtn.addEventListener('click', () => loadScenario(scenario.id));
+        actionsCell.appendChild(loadBtn);
+        
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'scenario-btn delete';
+        deleteBtn.innerHTML = '&times;'; // X symbol
+        deleteBtn.title = 'Delete this scenario';
+        deleteBtn.addEventListener('click', () => deleteScenario(scenario.id));
+        actionsCell.appendChild(deleteBtn);
+        
+        row.appendChild(actionsCell);
+        
+        // Add row to table
+        tableBody.appendChild(row);
+    });
+}
+
+// Load a specific scenario by ID
+function loadScenario(id) {
+    // Get scenarios from localStorage
+    const scenarios = JSON.parse(localStorage.getItem('ukIncomeScenarios') || '[]');
+    
+    // Find the scenario with matching ID
+    const scenario = scenarios.find(s => s.id === id);
+    if (!scenario) {
+        alert('Scenario not found');
+        return;
+    }
+    
+    // Populate form fields with values from the scenario
+    grossIncomeInput.value = scenario.inputs.grossIncome;
+    monthlyExpensesInput.value = scenario.inputs.monthlyExpenses;
+    stExpensesInput.value = scenario.inputs.stExpenses;
+    ltdExpensesInput.value = scenario.inputs.ltdExpenses;
+    employedPensionPctInput.value = scenario.inputs.employedPensionPct;
+    stPensionPctInput.value = scenario.inputs.stPensionPct;
+    ltdEmployerPensionInput.value = scenario.inputs.ltdEmployerPension;
+    employedBikInput.value = scenario.inputs.employedBik;
+    ltdBikInput.value = scenario.inputs.ltdBik;
+    ltdSalaryInput.value = scenario.inputs.ltdSalary;
+    ltdDividendsInput.value = scenario.inputs.ltdDividends;
+    
+    document.getElementById('scenario-name').value = scenario.name;
+    
+    // Update the calculation
+    handleInputChange();
+    
+    alert(`Scenario "${scenario.name}" loaded successfully`);
+}
+
+// Delete a scenario by ID
+function deleteScenario(id) {
+    // Get scenarios from localStorage
+    let scenarios = JSON.parse(localStorage.getItem('ukIncomeScenarios') || '[]');
+    
+    // Find the scenario with matching ID
+    const scenarioIndex = scenarios.findIndex(s => s.id === id);
+    if (scenarioIndex === -1) {
+        alert('Scenario not found');
+        return;
+    }
+    
+    // Ask for confirmation
+    const scenarioName = scenarios[scenarioIndex].name;
+    if (confirm(`Are you sure you want to delete the scenario "${scenarioName}"?`)) {
+        // Remove scenario from array
+        scenarios.splice(scenarioIndex, 1);
+        
+        // Save updated scenarios back to localStorage
+        localStorage.setItem('ukIncomeScenarios', JSON.stringify(scenarios));
+        
+        // Update the UI
+        updateScenariosTable();
+        
+        alert(`Scenario "${scenarioName}" deleted`);
+    }
+}
+
+// Clear all scenarios
+function clearAllScenarios() {
+    if (confirm('Are you sure you want to delete ALL saved scenarios? This cannot be undone.')) {
+        localStorage.removeItem('ukIncomeScenarios');
+        updateScenariosTable();
+        alert('All scenarios cleared');
+    }
+}
+
+// --- Initial Setup and Event Listeners ---
+// Run when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize the expense linking
     handleExpensesLinking();
     
     // Initialize calculations
     handleInputChange();
+    
+    // Load saved scenarios from localStorage
+    updateScenariosTable();
+    
+    // Add event listeners for scenario buttons
+    document.getElementById('save-scenario').addEventListener('click', saveScenario);
+    document.getElementById('clear-scenarios').addEventListener('click', clearAllScenarios);
 });

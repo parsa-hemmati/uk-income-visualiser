@@ -196,9 +196,15 @@
         </div>
     </div>
 
-
     <div class="results-section">
-        <h2>Results Comparison</h2>
+        <div class="results-header">
+            <h2>Results Comparison</h2>
+            <div class="action-buttons">
+                <input type="text" id="scenario-name" placeholder="Scenario name" value="Default Scenario">
+                <button id="save-scenario" class="action-btn">Save Scenario</button>
+                <button id="clear-scenarios" class="action-btn secondary">Clear All</button>
+            </div>
+        </div>
         <table id="results-table">
             <thead>
                 <tr>
@@ -280,6 +286,28 @@
                      <td>N/A</td>
                     <td id="ltd-actual-dividends-cell">£0</td>
                 </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- New Saved Scenarios Section -->
+    <div class="saved-scenarios-section">
+        <h2>Saved Scenarios</h2>
+        <div id="no-scenarios-message">No scenarios saved yet. Use the "Save Scenario" button above to save the current settings.</div>
+        <table id="scenarios-table" class="hidden">
+            <thead>
+                <tr>
+                    <th>Scenario Name</th>
+                    <th>Gross</th>
+                    <th>Expenses</th>
+                    <th>PAYE Take-Home</th>
+                    <th>Sole Trader Take-Home</th>
+                    <th>Ltd Co Take-Home</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="scenarios-table-body">
+                <!-- Scenarios will be inserted here -->
             </tbody>
         </table>
     </div>
