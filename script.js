@@ -823,6 +823,123 @@ function clearAllScenarios() {
     }
 }
 
+// --- Export and Download Functions ---
+// Functions to export and download scenarios in different formats
+
+// Convert scenarios to CSV format
+function scenariosToCSV(scenarios) {
+    // Define headers
+    const headers = [
+        'Scenario Name', 'Date Created',
+        'Gross Income', 'Monthly Expenses', 'Business Expenses (ST/Ltd)', 
+        'Ltd Salary', 'Ltd Dividends',
+        'PAYE Take-Home', 'Sole Trader Take-Home', 'Ltd Co Take-Home',
+        'PAYE Disposable', 'Sole Trader Disposable', 'Ltd Co Disposable',
+        'PAYE Tax', 'Sole Trader Tax', 'Ltd Co Personal Tax',
+        'PAYE NI', 'Sole Trader NI', 'Ltd Co Personal NI',
+        'Corporation Tax', 'Ltd Co Employer NI'
+    ];
+    
+    // Start with the headers row
+    let csvContent = headers.join(',') + '\n';
+    
+    // Format a value for CSV (add quotes if needed)
+    const formatForCSV = (value) => {
+        if (value === null || value === undefined) return '';
+        
+        // Convert to string
+        const stringValue = String(value);
+        
+        // Add quotes if value contains comma, newline, or quote
+        if (stringValue.includes(',') || stringValue.includes('\n') || stringValue.includes('"')) {
+            return `"${stringValue.replace(/"/g, '""')}"`;
+        }
+        
+        return stringValue;
+    };
+    
+    // Add each scenario as a row
+    scenarios.forEach(scenario => {
+        const dateCreated = new Date(scenario.timestamp).toLocaleString();
+        
+        const rowValues = [
+            scenario.name,
+            dateCreated,
+            scenario.inputs.grossIncome,
+            scenario.inputs.monthlyExpenses,
+            scenario.inputs.stExpenses,
+            scenario.inputs.ltdSalary,
+            scenario.inputs.ltdDividends,
+            scenario.results.employedTakeHome,
+            scenario.results.stTakeHome,
+            scenario.results.ltdTakeHome,
+            scenario.results.employedDisposable,
+            scenario.results.stDisposable,
+            scenario.results.ltdDisposable,
+            // Include other metrics if available
+            scenario.inputs.employedTax || '',
+            scenario.inputs.stTax || '',
+            scenario.inputs.ltdPersTax || '',
+            scenario.inputs.employedNi || '',
+            scenario.inputs.stNi || '',
+            scenario.inputs.ltdPersNi || '',
+            scenario.inputs.ltdCorpTax || '',
+            scenario.inputs.ltdEmpNiSalary || ''
+        ];
+        
+        // Add the row to CSV content
+        csvContent += rowValues.map(formatForCSV).join(',') + '\n';
+    });
+    
+    return csvContent;
+}
+
+// Helper function to download a file
+function downloadFile(content, filename, type) {
+    // Create a blob with the data
+    const blob = new Blob([content], { type });
+    
+    // Create a URL for the blob
+    const url = URL.createObjectURL(blob);
+    
+    // Create a link element to trigger download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    
+    // Append to body, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+// Function to handle the download scenario button click
+function handleDownloadScenarios() {
+    // Get the file name and format
+    const filename = document.getElementById('export-filename').value.trim() || 'uk-income-scenarios';
+    const format = document.getElementById('export-format').value;
+    
+    // Get scenarios from localStorage
+    const scenarios = JSON.parse(localStorage.getItem('ukIncomeScenarios') || '[]');
+    
+    if (scenarios.length === 0) {
+        alert('No scenarios to download. Save some scenarios first!');
+        return;
+    }
+    
+    // Export based on selected format
+    if (format === 'csv') {
+        const csv = scenariosToCSV(scenarios);
+        downloadFile(csv, `${filename}.csv`, 'text/csv;charset=utf-8;');
+    } else if (format === 'json') {
+        const json = JSON.stringify(scenarios, null, 2);
+        downloadFile(json, `${filename}.json`, 'application/json');
+    }
+}
+
 // --- Initial Setup and Event Listeners ---
 // Run when the page loads
 document.addEventListener('DOMContentLoaded', () => {
@@ -838,4 +955,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners for scenario buttons
     document.getElementById('save-scenario').addEventListener('click', saveScenario);
     document.getElementById('clear-scenarios').addEventListener('click', clearAllScenarios);
+    document.getElementById('download-scenarios').addEventListener('click', handleDownloadScenarios);
 });

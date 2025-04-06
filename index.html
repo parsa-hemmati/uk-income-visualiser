@@ -292,7 +292,17 @@
 
     <!-- New Saved Scenarios Section -->
     <div class="saved-scenarios-section">
-        <h2>Saved Scenarios</h2>
+        <div class="scenarios-header">
+            <h2>Saved Scenarios</h2>
+            <div class="export-controls">
+                <input type="text" id="export-filename" placeholder="export-filename" value="uk-income-scenarios">
+                <select id="export-format">
+                    <option value="csv">CSV</option>
+                    <option value="json">JSON</option>
+                </select>
+                <button id="download-scenarios" class="action-btn">Download</button>
+            </div>
+        </div>
         <div id="no-scenarios-message">No scenarios saved yet. Use the "Save Scenario" button above to save the current settings.</div>
         <table id="scenarios-table" class="hidden">
             <thead>

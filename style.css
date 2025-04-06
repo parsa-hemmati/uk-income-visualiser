@@ -548,6 +548,33 @@ h2, h3 {
     margin-right: auto;
 }
 
+.scenarios-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.export-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#export-filename {
+    padding: 8px;
+    border: 1px solid #c0d6e4;
+    border-radius: 4px;
+    width: 200px;
+}
+
+#export-format {
+    padding: 8px;
+    border: 1px solid #c0d6e4;
+    border-radius: 4px;
+    background-color: white;
+}
+
 #no-scenarios-message {
     padding: 20px;
     text-align: center;
