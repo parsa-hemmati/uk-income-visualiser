@@ -45,11 +45,17 @@
                 </div>
                 <div class="input-cell">
                     <label for="st-expenses">Allowable Expenses (£): <span class="tooltip" title="Enter the total annual costs incurred 'wholly and exclusively' for your business (e.g., materials, office costs, travel). This reduces your taxable profit.">?</span></label>
-                    <input type="number" id="st-expenses" value="8000" step="100">
+                    <div class="input-with-link">
+                        <input type="number" id="st-expenses" value="8000" step="100">
+                        <label class="link-checkbox">
+                            <input type="checkbox" id="link-expenses" checked>
+                            <span class="link-icon" title="Link expenses between Sole Trader and Ltd Company">🔗</span>
+                        </label>
+                    </div>
                 </div>
                 <div class="input-cell">
                     <label for="ltd-expenses">Allowable Expenses (£): <span class="tooltip" title="Costs the company incurs 'wholly and exclusively' for business (e.g., software, insurance, accountancy). Reduces profit subject to Corporation Tax.">?</span></label>
-                    <input type="number" id="ltd-expenses" value="5000" step="100">
+                    <input type="number" id="ltd-expenses" value="8000" step="100">
                 </div>
             </div>
             

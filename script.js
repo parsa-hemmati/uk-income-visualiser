@@ -420,23 +420,53 @@ function handleInputChange() {
     updateDisplay(grossIncome, annualPersonalExpenses, employedPensionPct, employedBik, stExpenses, stPensionPct, ltdSalary, ltdExpenses, ltdEmployerPension, ltdBik, ltdDividends);
 }
 
+// --- Linking Functionality ---
+const linkExpensesCheckbox = document.getElementById('link-expenses');
+
+// Function to handle linking of business expenses
+function handleExpensesLinking() {
+    if (linkExpensesCheckbox.checked) {
+        // When linking is enabled, sync Ltd expenses to match Sole Trader expenses
+        ltdExpensesInput.value = stExpensesInput.value;
+        ltdExpensesInput.disabled = true; // Disable Ltd input when linked
+    } else {
+        // When unlinking, enable the Ltd input again
+        ltdExpensesInput.disabled = false;
+    }
+    handleInputChange(); // Update calculations
+}
+
+// When Sole Trader expenses change and linking is enabled, update Ltd expenses
+stExpensesInput.addEventListener('input', function() {
+    if (linkExpensesCheckbox.checked) {
+        ltdExpensesInput.value = this.value;
+    }
+    handleInputChange();
+});
+
+// Toggle linking when checkbox is clicked
+linkExpensesCheckbox.addEventListener('change', handleExpensesLinking);
+
 // --- Event Listeners ---
 // Recalculate when any relevant input value changes
 grossIncomeInput.addEventListener('input', handleInputChange);
 monthlyExpensesInput.addEventListener('input', handleInputChange);
 employedPensionPctInput.addEventListener('input', handleInputChange);
-employedBikInput.addEventListener('input', handleInputChange); // Add listener
-stExpensesInput.addEventListener('input', handleInputChange);
+employedBikInput.addEventListener('input', handleInputChange);
 stPensionPctInput.addEventListener('input', handleInputChange);
 ltdSalaryInput.addEventListener('input', handleInputChange);
 ltdExpensesInput.addEventListener('input', handleInputChange);
 ltdEmployerPensionInput.addEventListener('input', handleInputChange);
-ltdBikInput.addEventListener('input', handleInputChange); // Add listener
+ltdBikInput.addEventListener('input', handleInputChange);
 ltdDividendsInput.addEventListener('input', handleInputChange);
 
 
 // --- Initial Calculation ---
 // Run calculations when the page loads with the default values
 document.addEventListener('DOMContentLoaded', () => {
-    handleInputChange(); // Use the helper function to get initial values
+    // Initialize the expense linking
+    handleExpensesLinking();
+    
+    // Initialize calculations
+    handleInputChange();
 });
