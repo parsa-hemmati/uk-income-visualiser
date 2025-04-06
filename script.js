@@ -508,6 +508,52 @@ function handleExpensesLinking() {
     handleInputChange(); // Update calculations
 }
 
+// Function to show transfer message
+function showTransferMessage(sourceId, amount, targetId) {
+    if (targetId === 'none' || !amount) return;
+    
+    const messageContainer = document.getElementById(`${sourceId}-transfer-message`);
+    if (!messageContainer) return;
+    
+    let targetName = '';
+    
+    // Get readable name for the target
+    switch (targetId) {
+        case 'monthly-expenses':
+            targetName = 'Personal Expenses';
+            break;
+        case 'st-expenses':
+            targetName = 'Sole Trader Expenses';
+            break;
+        case 'ltd-expenses':
+            targetName = 'Ltd Company Expenses';
+            break;
+        case 'ltd-salary':
+            targetName = 'Director\'s Salary';
+            break;
+        case 'ltd-dividends':
+            targetName = 'Dividends';
+            break;
+        case 'both-expenses':
+            targetName = 'Both Business Expenses';
+            break;
+        default:
+            targetName = targetId.replace(/-/g, ' ');
+    }
+    
+    // Format amount with proper sign
+    const formattedAmount = amount > 0 ? `+£${amount}` : `-£${Math.abs(amount)}`;
+    
+    // Set message content
+    messageContainer.textContent = `${formattedAmount} transferred to ${targetName}`;
+    messageContainer.classList.add('active');
+    
+    // Clear message after 3 seconds
+    setTimeout(() => {
+        messageContainer.classList.remove('active');
+    }, 3000);
+}
+
 // Handle clicks on the link buttons
 document.querySelectorAll('.link-btn').forEach(button => {
     button.addEventListener('click', function() {
@@ -678,9 +724,21 @@ document.querySelectorAll('.control-btn').forEach(button => {
                 }
                 
                 // Update both business expense fields with opposite direction change
-                stExpensesInput.value = Math.max(0, parseFloat(stExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
+                const stExpensesChange = isIncrement ? changeAmount : -changeAmount;
+                stExpensesInput.value = Math.max(0, parseFloat(stExpensesInput.value) + stExpensesChange);
+                
+                // Show transfer message for Sole Trader expenses
+                showTransferMessage(targetId, stExpensesChange, 'st-expenses');
+                showTransferMessage('st-expenses', -stExpensesChange, targetId);
+                
+                // If not linked, also update Ltd expenses separately
                 if (!linkExpensesCheckbox.checked) {
-                    ltdExpensesInput.value = Math.max(0, parseFloat(ltdExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
+                    const ltdExpensesChange = isIncrement ? changeAmount : -changeAmount;
+                    ltdExpensesInput.value = Math.max(0, parseFloat(ltdExpensesInput.value) + ltdExpensesChange);
+                    
+                    // Show transfer message for Ltd expenses
+                    showTransferMessage(targetId, ltdExpensesChange, 'ltd-expenses');
+                    showTransferMessage('ltd-expenses', -ltdExpensesChange, targetId);
                 }
             } else {
                 // Normal single field update
@@ -697,14 +755,22 @@ document.querySelectorAll('.control-btn').forEach(button => {
                         changeAmount = annualToMonthly(amount);
                     }
                     
-                    // Apply inverse change to the linked field (addition becomes subtraction and vice versa)
-                    let newLinkedValue = isIncrement 
-                        ? linkedCurrentValue - changeAmount 
-                        : linkedCurrentValue + changeAmount;
-                        
-                    // Ensure linked value doesn't go below zero
-                    newLinkedValue = Math.max(0, newLinkedValue);
-                    linkedField.value = newLinkedValue;
+                // Apply inverse change to the linked field (addition becomes subtraction and vice versa)
+                let newLinkedValue = isIncrement 
+                    ? linkedCurrentValue - changeAmount 
+                    : linkedCurrentValue + changeAmount;
+                    
+                // Ensure linked value doesn't go below zero
+                newLinkedValue = Math.max(0, newLinkedValue);
+                linkedField.value = newLinkedValue;
+                
+                // Show transfer message for both source and target
+                const actualAmountChange = isIncrement ? amount : -amount;
+                showTransferMessage(targetId, actualAmountChange, linkedTarget);
+                
+                // For the linked field, show the inverse transfer message
+                const inverseChange = isIncrement ? -changeAmount : changeAmount;
+                showTransferMessage(linkedTarget, inverseChange, targetId);
                 }
             }
         }
@@ -722,7 +788,16 @@ document.querySelectorAll('.control-btn').forEach(button => {
 // When Sole Trader expenses change and linking is enabled, update Ltd expenses
 stExpensesInput.addEventListener('input', function() {
     if (linkExpensesCheckbox.checked) {
+        const stExpenseValue = parseFloat(this.value) || 0;
+        const oldLtdValue = parseFloat(ltdExpensesInput.value) || 0;
+        const change = stExpenseValue - oldLtdValue;
+        
         ltdExpensesInput.value = this.value;
+        
+        // Only show transfer message if there's a significant change
+        if (Math.abs(change) > 1) {
+            showTransferMessage('st-expenses', change, 'ltd-expenses');
+        }
     }
     handleInputChange();
 });
@@ -738,11 +813,55 @@ employedPensionPctInput.addEventListener('input', handleInputChange);
 employedBikInput.addEventListener('input', handleInputChange);
 stPensionPctInput.addEventListener('input', handleInputChange);
 ltdSalaryInput.addEventListener('input', function() {
+    // Get the current link target for salary
+    const linkedTarget = activeLinkTargets['ltd-salary'];
+    if (linkedTarget !== 'none') {
+        const linkedField = document.getElementById(linkedTarget);
+        if (linkedField) {
+            const oldSalary = parseFloat(this.dataset.lastValue || 0) || 0;
+            const newSalary = parseFloat(this.value) || 0;
+            const change = newSalary - oldSalary;
+            
+            // Store the current value for future reference
+            this.dataset.lastValue = this.value;
+            
+            // Only show transfer message if there's a significant change
+            if (Math.abs(change) > 1) {
+                showTransferMessage('ltd-salary', -change, linkedTarget);
+            }
+        }
+    }
+    
+    // Store the current value for next comparison
+    this.dataset.lastValue = this.value;
+    
     // When salary changes, validate dividend constraints and update UI
     handleInputChange();
 });
 
 ltdExpensesInput.addEventListener('input', function() {
+    // Get the current link target for expenses
+    const linkedTarget = activeLinkTargets['ltd-expenses'];
+    if (linkedTarget !== 'none') {
+        const linkedField = document.getElementById(linkedTarget);
+        if (linkedField) {
+            const oldLtdExpenses = parseFloat(this.dataset.lastValue || 0) || 0;
+            const newLtdExpenses = parseFloat(this.value) || 0;
+            const change = newLtdExpenses - oldLtdExpenses;
+            
+            // Store the current value for future reference
+            this.dataset.lastValue = this.value;
+            
+            // Only show transfer message if there's a significant change
+            if (Math.abs(change) > 1) {
+                showTransferMessage('ltd-expenses', -change, linkedTarget);
+            }
+        }
+    }
+    
+    // Store the current value for next comparison
+    this.dataset.lastValue = this.value;
+    
     // When expenses change, validate dividend constraints and update UI
     handleInputChange();
 });
@@ -757,7 +876,32 @@ ltdBikInput.addEventListener('input', function() {
     handleInputChange();
 });
 
-ltdDividendsInput.addEventListener('input', handleInputChange);
+ltdDividendsInput.addEventListener('input', function() {
+    // Get the current link target for dividends
+    const linkedTarget = activeLinkTargets['ltd-dividends'];
+    if (linkedTarget !== 'none') {
+        const linkedField = document.getElementById(linkedTarget);
+        if (linkedField) {
+            const oldLtdDividends = parseFloat(this.dataset.lastValue || 0) || 0;
+            const newLtdDividends = parseFloat(this.value) || 0;
+            const change = newLtdDividends - oldLtdDividends;
+            
+            // Store the current value for future reference
+            this.dataset.lastValue = this.value;
+            
+            // Only show transfer message if there's a significant change
+            if (Math.abs(change) > 1) {
+                showTransferMessage('ltd-dividends', -change, linkedTarget);
+            }
+        }
+    }
+    
+    // Store the current value for next comparison (used for auto-validation)
+    this.dataset.lastValue = this.value;
+    
+    // Continue with normal input handling
+    handleInputChange();
+});
 
 
 // --- Scenario Management ---

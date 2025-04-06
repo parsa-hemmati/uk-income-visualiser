@@ -398,6 +398,28 @@ h2, h3 {
     background-color: #45a049;
 }
 
+/* Transfer message styling */
+.transfer-message {
+    font-size: 0.8em;
+    color: #0066cc;
+    margin: 5px 0;
+    padding: 4px 8px;
+    background-color: #e6f2ff;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    height: auto;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.transfer-message.active {
+    opacity: 1;
+    max-height: 40px;
+    margin: 5px 0;
+    border-left: 3px solid #0066cc;
+}
+
 .link-header {
     margin-bottom: 10px;
 }
