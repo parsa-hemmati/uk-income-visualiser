@@ -420,10 +420,15 @@ function handleInputChange() {
     updateDisplay(grossIncome, annualPersonalExpenses, employedPensionPct, employedBik, stExpenses, stPensionPct, ltdSalary, ltdExpenses, ltdEmployerPension, ltdBik, ltdDividends);
 }
 
-// --- Linking Functionality ---
+// --- Increment/Decrement and Linking Functionality ---
 const linkExpensesCheckbox = document.getElementById('link-expenses');
+const monthlyExpensesLinkSelect = document.getElementById('monthly-expenses-link');
+const stExpensesLinkSelect = document.getElementById('st-expenses-link');
+const ltdExpensesLinkSelect = document.getElementById('ltd-expenses-link');
+const ltdSalaryLinkSelect = document.getElementById('ltd-salary-link');
+const ltdDividendsLinkSelect = document.getElementById('ltd-dividends-link');
 
-// Function to handle linking of business expenses
+// Handle linking between Sole Trader and Ltd Company expenses
 function handleExpensesLinking() {
     if (linkExpensesCheckbox.checked) {
         // When linking is enabled, sync Ltd expenses to match Sole Trader expenses
@@ -435,6 +440,88 @@ function handleExpensesLinking() {
     }
     handleInputChange(); // Update calculations
 }
+
+// Helper function to convert monthly value to annual and vice versa
+function monthlyToAnnual(value) {
+    return value * 12;
+}
+
+function annualToMonthly(value) {
+    return value / 12;
+}
+
+// Handle increment/decrement button clicks
+document.querySelectorAll('.control-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const targetId = this.getAttribute('data-target');
+        const amount = parseInt(this.getAttribute('data-amount'));
+        const targetInput = document.getElementById(targetId);
+        
+        // Determine if we're incrementing or decrementing
+        const isIncrement = this.classList.contains('increment');
+        
+        // Get current value
+        let currentValue = parseFloat(targetInput.value) || 0;
+        
+        // Calculate new value (increment or decrement)
+        let newValue = isIncrement ? currentValue + amount : currentValue - amount;
+        
+        // Ensure value doesn't go below 0
+        newValue = Math.max(0, newValue);
+        
+        // Update the target input value
+        targetInput.value = newValue;
+        
+        // Get the linked field selector
+        const linkSelectId = `${targetId}-link`;
+        const linkSelect = document.getElementById(linkSelectId);
+        
+        if (linkSelect && linkSelect.value !== 'none') {
+            // Get the linked field and update it with the inverse change
+            const linkedField = document.getElementById(linkSelect.value);
+            
+            if (linkedField) {
+                let linkedCurrentValue = parseFloat(linkedField.value) || 0;
+                
+                // For monthly expenses to annual expenses, convert monthly change to annual
+                let changeAmount = amount;
+                if (targetId === 'monthly-expenses' && linkedField.id.includes('expenses')) {
+                    changeAmount = monthlyToAnnual(amount);
+                } else if (linkedField.id === 'monthly-expenses' && targetId.includes('expenses')) {
+                    changeAmount = annualToMonthly(amount);
+                }
+                
+                // Apply inverse change to the linked field (addition becomes subtraction and vice versa)
+                let newLinkedValue = isIncrement 
+                    ? linkedCurrentValue - changeAmount 
+                    : linkedCurrentValue + changeAmount;
+                    
+                // Ensure linked value doesn't go below zero
+                newLinkedValue = Math.max(0, newLinkedValue);
+                
+                // Special handling for "both-expenses" option
+                if (linkSelect.value === 'both-expenses') {
+                    // Update both business expense fields
+                    stExpensesInput.value = Math.max(0, parseFloat(stExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
+                    if (!linkExpensesCheckbox.checked) {
+                        ltdExpensesInput.value = Math.max(0, parseFloat(ltdExpensesInput.value) + (isIncrement ? changeAmount : -changeAmount));
+                    }
+                } else {
+                    // Normal single field update
+                    linkedField.value = newLinkedValue;
+                }
+            }
+        }
+        
+        // If this change affects the ST expenses and they're linked to Ltd expenses
+        if (targetId === 'st-expenses' && linkExpensesCheckbox.checked) {
+            ltdExpensesInput.value = targetInput.value;
+        }
+        
+        // Trigger input change to recalculate
+        handleInputChange();
+    });
+});
 
 // When Sole Trader expenses change and linking is enabled, update Ltd expenses
 stExpensesInput.addEventListener('input', function() {

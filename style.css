@@ -335,6 +335,62 @@ h2, h3 {
     padding-top: 8px;
 }
 
+/* Input Controls Styling */
+.input-with-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.control-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    border: 1px solid #c0d6e4;
+    background: #f0f8ff;
+    color: #2c5499;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    background: #e0f0ff;
+    border-color: #2c5499;
+}
+
+.control-btn:active {
+    background: #d0e8ff;
+    transform: translateY(1px);
+}
+
+.link-select {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #c0d6e4;
+    border-radius: 4px;
+    background-color: #f9fafb;
+    color: #333;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+.link-select:focus {
+    outline: none;
+    border-color: #2c5499;
+    box-shadow: 0 0 0 2px rgba(44, 84, 153, 0.15);
+}
+
 /* Linked Input Styling */
 .input-with-link {
     display: flex;

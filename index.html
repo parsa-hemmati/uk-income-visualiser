@@ -18,7 +18,19 @@
             </div>
             <div class="input-cell">
                 <label for="monthly-expenses">Monthly Personal Expenses (£): <span class="tooltip" title="Your average essential personal living costs per month (e.g., rent/mortgage, utilities, food, council tax, essential travel). This is multiplied by 12 and subtracted from Take-Home Pay to estimate annual Disposable Income.">?</span></label>
-                <input type="number" id="monthly-expenses" value="1500" step="100">
+                <div class="input-with-controls">
+                    <input type="number" id="monthly-expenses" value="1500" step="100">
+                    <div class="input-controls">
+                        <button type="button" class="control-btn increment" data-target="monthly-expenses" data-amount="100">+</button>
+                        <button type="button" class="control-btn decrement" data-target="monthly-expenses" data-amount="100">−</button>
+                    </div>
+                    <select id="monthly-expenses-link" class="link-select">
+                        <option value="none">No linked change</option>
+                        <option value="st-expenses">Add to Sole Trader expenses</option>
+                        <option value="ltd-expenses">Add to Ltd Co expenses</option>
+                        <option value="both-expenses">Add to both business expenses</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -45,17 +57,41 @@
                 </div>
                 <div class="input-cell">
                     <label for="st-expenses">Allowable Expenses (£): <span class="tooltip" title="Enter the total annual costs incurred 'wholly and exclusively' for your business (e.g., materials, office costs, travel). This reduces your taxable profit.">?</span></label>
-                    <div class="input-with-link">
-                        <input type="number" id="st-expenses" value="8000" step="100">
-                        <label class="link-checkbox">
-                            <input type="checkbox" id="link-expenses" checked>
-                            <span class="link-icon" title="Link expenses between Sole Trader and Ltd Company">🔗</span>
-                        </label>
+                    <div class="input-with-controls">
+                        <div class="input-with-link">
+                            <input type="number" id="st-expenses" value="8000" step="100">
+                            <label class="link-checkbox">
+                                <input type="checkbox" id="link-expenses" checked>
+                                <span class="link-icon" title="Link expenses between Sole Trader and Ltd Company">🔗</span>
+                            </label>
+                        </div>
+                        <div class="input-controls">
+                            <button type="button" class="control-btn increment" data-target="st-expenses" data-amount="100">+</button>
+                            <button type="button" class="control-btn decrement" data-target="st-expenses" data-amount="100">−</button>
+                        </div>
+                        <select id="st-expenses-link" class="link-select">
+                            <option value="none">No linked change</option>
+                            <option value="monthly-expenses">Reduce personal expenses</option>
+                            <option value="ltd-salary">Reduce Ltd salary</option>
+                            <option value="ltd-dividends">Reduce dividends</option>
+                        </select>
                     </div>
                 </div>
                 <div class="input-cell">
                     <label for="ltd-expenses">Allowable Expenses (£): <span class="tooltip" title="Costs the company incurs 'wholly and exclusively' for business (e.g., software, insurance, accountancy). Reduces profit subject to Corporation Tax.">?</span></label>
-                    <input type="number" id="ltd-expenses" value="8000" step="100">
+                    <div class="input-with-controls">
+                        <input type="number" id="ltd-expenses" value="8000" step="100">
+                        <div class="input-controls">
+                            <button type="button" class="control-btn increment" data-target="ltd-expenses" data-amount="100">+</button>
+                            <button type="button" class="control-btn decrement" data-target="ltd-expenses" data-amount="100">−</button>
+                        </div>
+                        <select id="ltd-expenses-link" class="link-select">
+                            <option value="none">No linked change</option>
+                            <option value="monthly-expenses">Reduce personal expenses</option>
+                            <option value="ltd-salary">Reduce Ltd salary</option>
+                            <option value="ltd-dividends">Reduce dividends</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
@@ -112,10 +148,34 @@
                 </div>
                 <div class="input-cell">
                     <label for="ltd-salary">Director's Salary (£): <span class="tooltip" title="Salary the company pays the director. Taxable via PAYE (Income Tax & NI). It's a deductible expense for the company's Corporation Tax calculation. Often set around NI thresholds for tax efficiency.">?</span></label>
-                    <input type="number" id="ltd-salary" value="12570" step="100">
+                    <div class="input-with-controls">
+                        <input type="number" id="ltd-salary" value="12570" step="100">
+                        <div class="input-controls">
+                            <button type="button" class="control-btn increment" data-target="ltd-salary" data-amount="100">+</button>
+                            <button type="button" class="control-btn decrement" data-target="ltd-salary" data-amount="100">−</button>
+                        </div>
+                        <select id="ltd-salary-link" class="link-select">
+                            <option value="none">No linked change</option>
+                            <option value="ltd-dividends">Reduce dividends</option>
+                            <option value="monthly-expenses">Reduce personal expenses</option>
+                            <option value="ltd-expenses">Add to business expenses</option>
+                        </select>
+                    </div>
                     <br>
                     <label for="ltd-dividends">Dividends (£): <span class="tooltip" title="Amount the director plans to take as dividends. Paid from company profits *after* Corporation Tax. Taxed personally at lower Dividend Tax rates. Cannot exceed available post-tax profit.">?</span></label>
-                    <input type="number" id="ltd-dividends" value="20000" step="100">
+                    <div class="input-with-controls">
+                        <input type="number" id="ltd-dividends" value="20000" step="100">
+                        <div class="input-controls">
+                            <button type="button" class="control-btn increment" data-target="ltd-dividends" data-amount="100">+</button>
+                            <button type="button" class="control-btn decrement" data-target="ltd-dividends" data-amount="100">−</button>
+                        </div>
+                        <select id="ltd-dividends-link" class="link-select">
+                            <option value="none">No linked change</option>
+                            <option value="ltd-salary">Reduce salary</option>
+                            <option value="monthly-expenses">Reduce personal expenses</option>
+                            <option value="ltd-expenses">Add to business expenses</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
