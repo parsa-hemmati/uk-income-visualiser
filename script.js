@@ -526,7 +526,7 @@ document.querySelectorAll('.control-btn').forEach(button => {
         if (targetId === 'gross-income') {
             const linkedLtdTarget = activeLinkTargets[targetId];
             
-            if (linkedLtdTarget === 'ltd-auto-distribute' || linkedLtdTarget === 'ltd-salary-dividends') {
+            if (linkedLtdTarget === 'ltd-auto-distribute' || linkedLtdTarget === 'ltd-salary-dividends' || linkedLtdTarget === 'expenses-ratio') {
                 // Calculate the change amount
                 const changeAmount = newValue - currentValue;
                 
@@ -535,7 +535,30 @@ document.querySelectorAll('.control-btn').forEach(button => {
                 const ltdPension = parseFloat(ltdEmployerPensionInput.value) || 0;
                 const ltdBikValue = parseFloat(ltdBikInput.value) || 0;
                 
-                if (linkedLtdTarget === 'ltd-auto-distribute') {
+                if (linkedLtdTarget === 'expenses-ratio') {
+                    // Adjust expenses proportionally to turnover changes
+                    
+                    // Calculate expense ratio based on current values
+                    const currentSTExpenses = parseFloat(stExpensesInput.value) || 0;
+                    const currentLtdExpenses = parseFloat(ltdExpensesInput.value) || 0;
+                    const expenseRatio = currentSTExpenses / currentValue; // Current ratio of expenses to turnover
+                    
+                    // Calculate new expense amounts
+                    const newSTExpenseAmount = Math.round(newValue * expenseRatio);
+                    
+                    // Update Sole Trader expenses
+                    stExpensesInput.value = newSTExpenseAmount;
+                    
+                    // If expenses are linked, update Ltd expenses too
+                    if (linkExpensesCheckbox.checked) {
+                        ltdExpensesInput.value = newSTExpenseAmount;
+                    } else {
+                        // If not linked, maintain the same ratio for Ltd expenses separately
+                        const ltdExpenseRatio = currentLtdExpenses / currentValue;
+                        ltdExpensesInput.value = Math.round(newValue * ltdExpenseRatio);
+                    }
+                    
+                } else if (linkedLtdTarget === 'ltd-auto-distribute') {
                     // Auto-distribute: Divide any additional income 30% to salary, 70% to dividends
                     // (after accounting for expenses, tax implications)
                     
