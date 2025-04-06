@@ -400,8 +400,50 @@ function updateDisplay(grossIncome, annualPersonalExpenses, employedPensionPct, 
     // }
 }
 
+// Function to validate and adjust Ltd Company inputs to ensure they respect business constraints
+function validateLtdInputs() {
+    const grossIncome = parseFloat(grossIncomeInput.value) || 0;
+    const ltdExpenses = parseFloat(ltdExpensesInput.value) || 0;
+    const ltdSalary = parseFloat(ltdSalaryInput.value) || 0;
+    const ltdEmployerPension = parseFloat(ltdEmployerPensionInput.value) || 0;
+    const ltdBik = parseFloat(ltdBikInput.value) || 0;
+    const ltdDividends = parseFloat(ltdDividendsInput.value) || 0;
+    
+    // Calculate employer NI on salary for accurate constraint checking
+    const employerNIOnSalary = Math.max(0, ltdSalary - TAX_CONFIG.niEmployer_ST) * TAX_CONFIG.niEmployer_Rate;
+    
+    // Calculate employer NI on BiK
+    const employerNIOnBik = ltdBik * TAX_CONFIG.niClass1A_Rate;
+    
+    // Calculate total company outflows
+    const totalOutflows = ltdExpenses + ltdSalary + employerNIOnSalary + ltdEmployerPension + employerNIOnBik;
+    
+    // Calculate profit available for Corporation Tax
+    const profitForCT = Math.max(0, grossIncome - totalOutflows);
+    
+    // Calculate Corporation Tax
+    const corporateTaxRate = profitForCT <= TAX_CONFIG.ctSmallProfitThreshold ? 
+                           TAX_CONFIG.ctSmallProfitRate : TAX_CONFIG.corporationTaxRate;
+    const corporationTax = profitForCT * corporateTaxRate;
+    
+    // Calculate maximum available for dividends
+    const maxAvailableForDividends = Math.max(0, profitForCT - corporationTax);
+    
+    // If current dividends exceed what's available, cap them
+    if (ltdDividends > maxAvailableForDividends) {
+        ltdDividendsInput.value = maxAvailableForDividends.toFixed(0);
+        return true; // Indicate that values were adjusted
+    }
+    
+    return false; // No adjustments needed
+}
+
 // --- Helper function to get inputs and trigger update ---
 function handleInputChange() {
+    // Validate and adjust Ltd inputs to ensure business constraints are respected
+    const valuesAdjusted = validateLtdInputs();
+    
+    // Read all input values
     const grossIncome = parseFloat(grossIncomeInput.value) || 0;
     const monthlyPersonalExpenses = parseFloat(monthlyExpensesInput.value) || 0;
     const annualPersonalExpenses = monthlyPersonalExpenses * 12;
@@ -417,6 +459,26 @@ function handleInputChange() {
     const ltdEmployerPension = parseFloat(ltdEmployerPensionInput.value) || 0;
     const ltdBik = parseFloat(ltdBikInput.value) || 0;
     const ltdDividends = parseFloat(ltdDividendsInput.value) || 0;
+
+    // If values were adjusted, provide feedback to the user
+    if (valuesAdjusted) {
+        const adjustedDividends = parseFloat(ltdDividendsInput.value) || 0;
+        console.log(`Adjusted dividends to ${adjustedDividends} to match available funds`);
+        
+        // Show the validation message
+        const validationMessage = document.getElementById('validation-message');
+        validationMessage.classList.remove('hidden');
+        
+        // Highlight the dividends input field
+        ltdDividendsInput.style.backgroundColor = '#fff8e1';
+        
+        // After 5 seconds, remove the highlight
+        setTimeout(() => {
+            ltdDividendsInput.style.backgroundColor = '';
+        }, 5000);
+        
+        // The validation message will automatically hide due to CSS animation
+    }
 
     updateDisplay(grossIncome, annualPersonalExpenses, employedPensionPct, employedBik, stExpenses, stPensionPct, ltdSalary, ltdExpenses, ltdEmployerPension, ltdBik, ltdDividends);
 }

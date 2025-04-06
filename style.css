@@ -536,6 +536,34 @@ h2, h3 {
     width: 200px;
 }
 
+/* Validation Message Styling */
+.validation-message {
+    background-color: #ffecb3; /* Light amber background */
+    color: #804000; /* Dark amber text */
+    padding: 10px 15px;
+    margin: 0 auto 15px auto;
+    border-radius: 6px;
+    border-left: 4px solid #ff9800; /* Amber accent */
+    font-weight: 500;
+    max-width: 1200px;
+    text-align: center;
+    transition: all 0.3s ease;
+    opacity: 1;
+    animation: fadeInOut 5s forwards;
+}
+
+.validation-message.hidden {
+    display: none;
+    opacity: 0;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+}
+
 /* Disclaimer Section Styling */
 .disclaimer-section {
     background-color: #fff8e1; /* Light yellow background for warning/disclaimer */
