@@ -737,10 +737,26 @@ monthlyExpensesInput.addEventListener('input', handleInputChange);
 employedPensionPctInput.addEventListener('input', handleInputChange);
 employedBikInput.addEventListener('input', handleInputChange);
 stPensionPctInput.addEventListener('input', handleInputChange);
-ltdSalaryInput.addEventListener('input', handleInputChange);
-ltdExpensesInput.addEventListener('input', handleInputChange);
-ltdEmployerPensionInput.addEventListener('input', handleInputChange);
-ltdBikInput.addEventListener('input', handleInputChange);
+ltdSalaryInput.addEventListener('input', function() {
+    // When salary changes, validate dividend constraints and update UI
+    handleInputChange();
+});
+
+ltdExpensesInput.addEventListener('input', function() {
+    // When expenses change, validate dividend constraints and update UI
+    handleInputChange();
+});
+
+ltdEmployerPensionInput.addEventListener('input', function() {
+    // When employer pension changes, validate dividend constraints and update UI
+    handleInputChange();
+});
+
+ltdBikInput.addEventListener('input', function() {
+    // When BiK changes, validate dividend constraints and update UI
+    handleInputChange();
+});
+
 ltdDividendsInput.addEventListener('input', handleInputChange);
 
 
