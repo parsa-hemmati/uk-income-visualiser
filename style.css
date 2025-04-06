@@ -536,6 +536,46 @@ h2, h3 {
     width: 200px;
 }
 
+/* Disclaimer Section Styling */
+.disclaimer-section {
+    background-color: #fff8e1; /* Light yellow background for warning/disclaimer */
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    border-left: 5px solid #ffc107; /* Warning yellow accent */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.disclaimer-section h2 {
+    color: #b45309; /* Darker warm color for disclaimer heading */
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.disclaimer-section ul {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding-left: 25px;
+}
+
+.disclaimer-section li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.disclaimer-section a {
+    color: #2c5499;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.disclaimer-section a:hover {
+    text-decoration: underline;
+}
+
 /* Saved Scenarios Section Styling */
 .saved-scenarios-section {
     background-color: #fff;
