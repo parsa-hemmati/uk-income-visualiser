@@ -1,20 +1,33 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     line-height: 1.6;
-    margin: 20px;
-    background-color: #f4f4f4;
+    margin: 0;
+    padding: 30px;
+    background-color: #f8f9fa;
+    color: #333;
 }
 
-h1, h2, h3 {
-    color: #333;
+h1 {
+    color: #1a3f77; /* More British/professional blue */
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    letter-spacing: -0.5px;
+}
+
+h2, h3 {
+    color: #2c5499;
 }
 
 .input-section, .results-section {
     background-color: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .input-section label {
@@ -206,10 +219,10 @@ h1, h2, h3 {
 .common-inputs, .scenario-inputs {
     /* Keep general input section styling */
     background-color: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .scenario-inputs h2, .common-inputs h2 {
@@ -296,10 +309,24 @@ h1, h2, h3 {
 
 .input-cell input[type="number"] {
     width: 120px; /* Consistent smaller width */
-    padding: 6px;
+    padding: 8px 10px;
     margin-bottom: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #c0d6e4;
     border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-cell input[type="number"]:focus {
+    outline: none;
+    border-color: #2c5499;
+    box-shadow: 0 0 0 3px rgba(44, 84, 153, 0.15);
+}
+
+.input-cell input[type="number"]:disabled {
+    background-color: #f0f3f8;
+    color: #666;
+    border-color: #c0d6e4;
 }
 
 .not-applicable {
@@ -388,18 +415,30 @@ h1, h2, h3 {
     table-layout: fixed; /* Ensure fixed widths */
 }
 
+#results-table {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 #results-table th, #results-table td {
-    border: 1px solid #ddd;
-    padding: 10px 12px; /* Match input table padding */
+    border: 1px solid #dbe9f5;
+    padding: 12px 15px; /* Slightly more padding */
     text-align: right;
     vertical-align: top;
     width: 23.3%; /* Match input table cells */
 }
 
 #results-table th {
-    background-color: #f2f2f2;
+    background-color: #2c5499;
+    color: white;
     text-align: center;
     font-weight: bold;
+    padding: 14px 12px;
+}
+
+#results-table th:first-child {
+    background-color: #1a3f77;
 }
 
 #results-table th:first-child,
@@ -417,10 +456,12 @@ h1, h2, h3 {
 
 #results-table .highlight-row td {
     font-weight: bold;
-    background-color: #e7f3ff; /* Light blue highlight for key results */
+    background-color: #e5f0ff; /* Light blue highlight for key results */
+    color: #15283c;
+    font-size: 1.05em;
 }
 #results-table .highlight-row td:first-child {
-     background-color: #d0e8ff; /* Slightly darker blue for metric label */
+     background-color: #d0e4ff; /* Slightly darker blue for metric label */
 }
 
 
